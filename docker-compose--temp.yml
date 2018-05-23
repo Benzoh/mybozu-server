@@ -1,0 +1,52 @@
+version: '3'
+services:
+  mybozu_rails:
+    container_name: mybozu_rails
+    build: ./rails
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    volumes:
+      - /Users/Benzoh/Develop/personal/mybozu_server/html/mybozu:/mybozu
+    ports:
+      - "3000:3000"
+    depends_on:
+     - mybozu_db
+  mybozu_web:
+    container_name: mybozu_web
+    build: ./web
+    ports:
+      - "80:80"
+    volumes:
+      - /Users/Benzoh/Develop/personal/mybozu_server/html:/var/www/html/
+    links:
+      - mybozu_db
+  mybozu_db:
+    container_name: mybozu_db
+    build: ./db
+    volumes:
+      - db-data:/var/lib/mysql/data
+      - /Users/Benzoh/Develop/personal/mybozu_server/mysql/init:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mybozu_web
+      MYSQL_USER: bzoh
+      MYSQL_PASSWORD: password
+  mybozu_phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: mybozu_phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mybozu_db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+     - 8080:80
+    depends_on:
+      - mybozu_db
+    volumes:
+     - /sessions
+volumes:
+  db-data:
