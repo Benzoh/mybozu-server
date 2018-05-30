@@ -1,3 +1,6 @@
 [submodule "html/mybozu_base_coding"]
 	path = html/mybozu_base_coding
 	url = git@github.com:Benzoh/mybozu_base_coding.git
+[submodule "html/mybozu"]
+	path = html/mybozu
+	url = git@github.com:Benzoh/mybozu.git
